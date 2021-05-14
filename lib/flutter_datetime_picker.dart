@@ -338,6 +338,64 @@ class _DatePickerState extends State<_DatePickerComponent> {
     return itemView;
   }
 
+  Widget _renderColumnView2(
+    ValueKey key,
+    DatePickerTheme theme,
+    StringAtIndexCallBack stringAtIndexCB,
+    ScrollController scrollController,
+    int layoutProportion,
+    ValueChanged<int> selectedChangedWhenScrolling,
+    ValueChanged<int> selectedChangedWhenScrollEnd,
+  ) {
+    return Expanded(
+      flex: layoutProportion,
+      child: Container(
+        padding: EdgeInsets.all(8.0),
+        height: theme.containerHeight,
+        decoration: BoxDecoration(color: theme.backgroundColor),
+        child: NotificationListener(
+          onNotification: (ScrollNotification notification) {
+            if (notification.depth == 0 &&
+                notification is ScrollEndNotification &&
+                notification.metrics is FixedExtentMetrics) {
+              final FixedExtentMetrics metrics =
+                  notification.metrics as FixedExtentMetrics;
+              final int currentItemIndex = metrics.itemIndex;
+              selectedChangedWhenScrollEnd(currentItemIndex);
+            }
+            return false;
+          },
+          child: CupertinoPicker.builder(
+            key: key,
+            backgroundColor: theme.backgroundColor,
+            scrollController: scrollController as FixedExtentScrollController,
+            itemExtent: theme.itemHeight,
+            onSelectedItemChanged: (int index) {
+              selectedChangedWhenScrolling(index);
+            },
+            useMagnifier: true,
+            childCount: 2,
+            itemBuilder: (BuildContext context, int index) {
+              final content = stringAtIndexCB(index);
+              if (content == null) {
+                return null;
+              }
+              return Container(
+                height: theme.itemHeight,
+                alignment: Alignment.center,
+                child: Text(
+                  content,
+                  style: theme.itemStyle,
+                  textAlign: TextAlign.start,
+                ),
+              );
+            },
+          ),
+        ),
+      ),
+    );
+  }
+
   Widget _renderColumnView(
     ValueKey key,
     DatePickerTheme theme,
@@ -424,7 +482,7 @@ class _DatePickerState extends State<_DatePickerComponent> {
           ),
           Container(
             child: widget.pickerModel.layoutProportions()[1] > 0
-                ? _renderColumnView(
+                ? _renderColumnView2(
                     ValueKey(widget.pickerModel.currentLeftIndex()),
                     theme,
                     widget.pickerModel.middleStringAtIndex,
