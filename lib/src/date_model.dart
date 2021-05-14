@@ -382,7 +382,7 @@ class TimePickerModel extends CommonPickerModel {
     this.currentTime = currentTime ?? DateTime.now();
 
     _currentLeftIndex = this.currentTime.hour;
-    _currentMiddleIndex = this.currentTime.minute;
+    _currentMiddleIndex = this.currentTime.minute < 30 ? 0 : 1;
     _currentRightIndex = this.currentTime.second;
   }
 
@@ -398,7 +398,7 @@ class TimePickerModel extends CommonPickerModel {
   @override
   String? middleStringAtIndex(int index) {
     if (index >= 0 && index < 60) {
-      return digits(index, 2);
+      return digits(index * 30, 2);
     } else {
       return null;
     }
@@ -438,9 +438,9 @@ class TimePickerModel extends CommonPickerModel {
   DateTime finalTime() {
     return currentTime.isUtc
         ? DateTime.utc(currentTime.year, currentTime.month, currentTime.day,
-            _currentLeftIndex, _currentMiddleIndex, _currentRightIndex)
+            _currentLeftIndex, _currentMiddleIndex * 30, _currentRightIndex)
         : DateTime(currentTime.year, currentTime.month, currentTime.day,
-            _currentLeftIndex, _currentMiddleIndex, _currentRightIndex);
+            _currentLeftIndex, _currentMiddleIndex * 30, _currentRightIndex);
   }
 }
 
