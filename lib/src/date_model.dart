@@ -382,7 +382,11 @@ class TimePickerModel extends CommonPickerModel {
     this.currentTime = currentTime ?? DateTime.now();
 
     _currentLeftIndex = this.currentTime.hour;
-    _currentMiddleIndex = this.currentTime.minute < 30 ? 0 : 1;
+    _currentMiddleIndex = this.currentTime.minute < 15
+        ? 0
+        : this.currentTime.minute < 30
+            ? 1
+            : 2;
     _currentRightIndex = this.currentTime.second;
   }
 
@@ -398,7 +402,7 @@ class TimePickerModel extends CommonPickerModel {
   @override
   String? middleStringAtIndex(int index) {
     if (index >= 0 && index < 60) {
-      return digits(index * 30, 2);
+      return digits(index * 15, 2);
     } else {
       return null;
     }
@@ -438,9 +442,9 @@ class TimePickerModel extends CommonPickerModel {
   DateTime finalTime() {
     return currentTime.isUtc
         ? DateTime.utc(currentTime.year, currentTime.month, currentTime.day,
-            _currentLeftIndex, _currentMiddleIndex * 30, _currentRightIndex)
+            _currentLeftIndex, _currentMiddleIndex * 15, _currentRightIndex)
         : DateTime(currentTime.year, currentTime.month, currentTime.day,
-            _currentLeftIndex, _currentMiddleIndex * 30, _currentRightIndex);
+            _currentLeftIndex, _currentMiddleIndex * 15, _currentRightIndex);
   }
 }
 
@@ -694,5 +698,81 @@ class DateTimePickerModel extends CommonPickerModel {
   @override
   String rightDivider() {
     return ':';
+  }
+}
+
+//a time as quantity picker model
+class TimeAsQuantityPickerModel extends CommonPickerModel {
+  bool showSecondsColumn;
+
+  TimeAsQuantityPickerModel(
+      {DateTime? currentTime, LocaleType? locale, this.showSecondsColumn: true})
+      : super(locale: locale) {
+    this.currentTime = currentTime ?? DateTime.now();
+
+    _currentLeftIndex = 1;
+    _currentMiddleIndex = this.currentTime.minute < 15
+        ? 0
+        : this.currentTime.minute < 30
+            ? 1
+            : 2;
+    _currentRightIndex = this.currentTime.second;
+  }
+
+  @override
+  String? leftStringAtIndex(int index) {
+    if (index > 0 && index <= 48) {
+      return '$index時間';
+    } else {
+      return null;
+    }
+  }
+
+  @override
+  String? middleStringAtIndex(int index) {
+    if (index >= 0 && index < 60) {
+      return '${digits(index * 15, 2)}分';
+    } else {
+      return null;
+    }
+  }
+
+  @override
+  String? rightStringAtIndex(int index) {
+    if (index >= 0 && index < 60) {
+      return digits(index, 2);
+    } else {
+      return null;
+    }
+  }
+
+  @override
+  String leftDivider() {
+    return "";
+  }
+
+  @override
+  String rightDivider() {
+    if (showSecondsColumn)
+      return ":";
+    else
+      return "";
+  }
+
+  @override
+  List<int> layoutProportions() {
+    if (showSecondsColumn)
+      return [1, 1, 1];
+    else
+      return [1, 1, 0];
+  }
+
+  @override
+  DateTime finalTime() {
+    return currentTime.isUtc
+        ? DateTime.utc(currentTime.year, currentTime.month, currentTime.day,
+            _currentLeftIndex, _currentMiddleIndex * 15, _currentRightIndex)
+        : DateTime(currentTime.year, currentTime.month, currentTime.day,
+            _currentLeftIndex, _currentMiddleIndex * 15, _currentRightIndex);
   }
 }
