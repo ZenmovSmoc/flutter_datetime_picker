@@ -704,18 +704,19 @@ class DateTimePickerModel extends CommonPickerModel {
 //a time as quantity picker model
 class TimeAsQuantityPickerModel extends CommonPickerModel {
   bool showSecondsColumn;
+  int? leftIndex;
+  int? middleIndex;
 
   TimeAsQuantityPickerModel(
-      {DateTime? currentTime, LocaleType? locale, this.showSecondsColumn: true})
+      {DateTime? currentTime,
+      LocaleType? locale,
+      this.showSecondsColumn: true,
+      this.leftIndex,
+      this.middleIndex})
       : super(locale: locale) {
     this.currentTime = currentTime ?? DateTime.now();
-
-    _currentLeftIndex = 1;
-    _currentMiddleIndex = this.currentTime.minute < 15
-        ? 0
-        : this.currentTime.minute < 30
-            ? 1
-            : 2;
+    _currentLeftIndex = leftIndex ?? 0;
+    _currentMiddleIndex = middleIndex ?? 0;
     _currentRightIndex = this.currentTime.second;
   }
 

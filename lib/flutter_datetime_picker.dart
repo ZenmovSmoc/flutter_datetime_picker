@@ -189,19 +189,19 @@ class DatePicker {
   ///
   /// Display Time as Quantity picker bottom sheet.
   ///
-  static Future<DateTime?> showTimeAsQuantityPicker(
-    BuildContext context, {
-    bool showTitleActions: true,
-    bool showSecondsColumn: true,
-    DateChangedCallback? onChanged,
-    DateChangedCallback? onConfirm,
-    DateCancelledCallback? onCancel,
-    locale: LocaleType.en,
-    DateTime? currentTime,
-    DatePickerTheme? theme,
-    int? leftChildCount,
-    int? middleChildCount,
-  }) async {
+  static Future<DateTime?> showTimeAsQuantityPicker(BuildContext context,
+      {bool showTitleActions: true,
+      bool showSecondsColumn: true,
+      DateChangedCallback? onChanged,
+      DateChangedCallback? onConfirm,
+      DateCancelledCallback? onCancel,
+      locale: LocaleType.en,
+      DateTime? currentTime,
+      DatePickerTheme? theme,
+      int? leftChildCount,
+      int? middleChildCount,
+      int? leftIndex,
+      int? middleIndex}) async {
     return await Navigator.push(
       context,
       _DatePickerRoute(
@@ -214,10 +214,11 @@ class DatePicker {
           barrierLabel:
               MaterialLocalizations.of(context).modalBarrierDismissLabel,
           pickerModel: TimeAsQuantityPickerModel(
-            currentTime: currentTime,
-            locale: locale,
-            showSecondsColumn: showSecondsColumn,
-          ),
+              currentTime: currentTime,
+              locale: locale,
+              showSecondsColumn: showSecondsColumn,
+              leftIndex: leftIndex ?? 0,
+              middleIndex: middleIndex ?? 0),
           leftChildCount: leftChildCount,
           middleChildCount: middleChildCount),
     );
