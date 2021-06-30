@@ -386,7 +386,9 @@ class TimePickerModel extends CommonPickerModel {
         ? 0
         : this.currentTime.minute < 30
             ? 1
-            : 2;
+            : this.currentTime.minute < 45
+                ? 2
+                : 3;
     _currentRightIndex = this.currentTime.second;
   }
 
