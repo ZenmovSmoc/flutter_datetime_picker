@@ -133,9 +133,9 @@ class DatePickerModel extends CommonPickerModel {
 
   DatePickerModel(
       {DateTime? currentTime,
-      DateTime? maxTime,
-      DateTime? minTime,
-      LocaleType? locale})
+        DateTime? maxTime,
+        DateTime? minTime,
+        LocaleType? locale})
       : super(locale: locale) {
     this.maxTime = maxTime ?? DateTime(2049, 12, 31);
     this.minTime = minTime ?? DateTime(1970, 1, 1);
@@ -178,14 +178,14 @@ class DatePickerModel extends CommonPickerModel {
   int _maxDayOfCurrentMonth() {
     int dayCount = calcDateCount(currentTime.year, currentTime.month);
     return currentTime.year == maxTime.year &&
-            currentTime.month == maxTime.month
+        currentTime.month == maxTime.month
         ? maxTime.day
         : dayCount;
   }
 
   int _minDayOfCurrentMonth() {
     return currentTime.year == minTime.year &&
-            currentTime.month == minTime.month
+        currentTime.month == minTime.month
         ? minTime.day
         : 1;
   }
@@ -218,27 +218,27 @@ class DatePickerModel extends CommonPickerModel {
     if (currentTime.month == 2 && currentTime.day == 29) {
       newTime = currentTime.isUtc
           ? DateTime.utc(
-              destYear,
-              currentTime.month,
-              calcDateCount(destYear, 2),
-            )
+        destYear,
+        currentTime.month,
+        calcDateCount(destYear, 2),
+      )
           : DateTime(
-              destYear,
-              currentTime.month,
-              calcDateCount(destYear, 2),
-            );
+        destYear,
+        currentTime.month,
+        calcDateCount(destYear, 2),
+      );
     } else {
       newTime = currentTime.isUtc
           ? DateTime.utc(
-              destYear,
-              currentTime.month,
-              currentTime.day,
-            )
+        destYear,
+        currentTime.month,
+        currentTime.day,
+      )
           : DateTime(
-              destYear,
-              currentTime.month,
-              currentTime.day,
-            );
+        destYear,
+        currentTime.month,
+        currentTime.day,
+      );
     }
     //min/max check
     if (newTime.isAfter(maxTime)) {
@@ -268,15 +268,15 @@ class DatePickerModel extends CommonPickerModel {
     int dayCount = calcDateCount(currentTime.year, destMonth);
     newTime = currentTime.isUtc
         ? DateTime.utc(
-            currentTime.year,
-            destMonth,
-            currentTime.day <= dayCount ? currentTime.day : dayCount,
-          )
+      currentTime.year,
+      destMonth,
+      currentTime.day <= dayCount ? currentTime.day : dayCount,
+    )
         : DateTime(
-            currentTime.year,
-            destMonth,
-            currentTime.day <= dayCount ? currentTime.day : dayCount,
-          );
+      currentTime.year,
+      destMonth,
+      currentTime.day <= dayCount ? currentTime.day : dayCount,
+    );
     //min/max check
     if (newTime.isAfter(maxTime)) {
       currentTime = maxTime;
@@ -297,15 +297,15 @@ class DatePickerModel extends CommonPickerModel {
     int minDay = _minDayOfCurrentMonth();
     currentTime = currentTime.isUtc
         ? DateTime.utc(
-            currentTime.year,
-            currentTime.month,
-            minDay + index,
-          )
+      currentTime.year,
+      currentTime.month,
+      minDay + index,
+    )
         : DateTime(
-            currentTime.year,
-            currentTime.month,
-            minDay + index,
-          );
+      currentTime.year,
+      currentTime.month,
+      minDay + index,
+    );
   }
 
   @override
@@ -385,10 +385,10 @@ class TimePickerModel extends CommonPickerModel {
     _currentMiddleIndex = this.currentTime.minute < 15
         ? 0
         : this.currentTime.minute < 30
-            ? 1
-            : this.currentTime.minute < 45
-                ? 2
-                : 3;
+        ? 1
+        : this.currentTime.minute < 45
+        ? 2
+        : 3;
     _currentRightIndex = this.currentTime.second;
   }
 
@@ -444,9 +444,9 @@ class TimePickerModel extends CommonPickerModel {
   DateTime finalTime() {
     return currentTime.isUtc
         ? DateTime.utc(currentTime.year, currentTime.month, currentTime.day,
-            _currentLeftIndex, _currentMiddleIndex * 15, _currentRightIndex)
+        _currentLeftIndex, _currentMiddleIndex * 15, _currentRightIndex)
         : DateTime(currentTime.year, currentTime.month, currentTime.day,
-            _currentLeftIndex, _currentMiddleIndex * 15, _currentRightIndex);
+        _currentLeftIndex, _currentMiddleIndex * 15, _currentRightIndex);
   }
 }
 
@@ -514,9 +514,9 @@ class Time12hPickerModel extends CommonPickerModel {
     int hour = _currentLeftIndex + 12 * _currentRightIndex;
     return currentTime.isUtc
         ? DateTime.utc(currentTime.year, currentTime.month, currentTime.day,
-            hour, _currentMiddleIndex, 0)
+        hour, _currentMiddleIndex, 0)
         : DateTime(currentTime.year, currentTime.month, currentTime.day, hour,
-            _currentMiddleIndex, 0);
+        _currentMiddleIndex, 0);
   }
 }
 
@@ -527,9 +527,9 @@ class DateTimePickerModel extends CommonPickerModel {
 
   DateTimePickerModel(
       {DateTime? currentTime,
-      DateTime? maxTime,
-      DateTime? minTime,
-      LocaleType? locale})
+        DateTime? maxTime,
+        DateTime? minTime,
+        LocaleType? locale})
       : super(locale: locale) {
     if (currentTime != null) {
       this.currentTime = currentTime;
@@ -573,6 +573,16 @@ class DateTimePickerModel extends CommonPickerModel {
         _currentRightIndex = this.currentTime.minute - this.minTime!.minute;
       }
     }
+    // 1116
+    _currentRightIndex = this.currentTime.minute < 15
+        ? 0
+        : this.currentTime.minute < 30
+        ? 1
+        : this.currentTime.minute < 45
+        ? 2
+        : 3;
+    // 1116
+
   }
 
   bool isAtSameDay(DateTime? day1, DateTime? day2) {
@@ -653,25 +663,26 @@ class DateTimePickerModel extends CommonPickerModel {
 
   @override
   String? rightStringAtIndex(int index) {
-    if (index >= 0 && index < 60) {
-      DateTime time = currentTime.add(Duration(days: _currentLeftIndex));
-      if (isAtSameDay(minTime, time) && _currentMiddleIndex == 0) {
-        if (index >= 0 && index < 60 - minTime!.minute) {
-          return digits(minTime!.minute + index, 2);
-        } else {
-          return null;
-        }
-      } else if (isAtSameDay(maxTime, time) &&
-          _currentMiddleIndex >= maxTime!.hour) {
-        if (index >= 0 && index <= maxTime!.minute) {
-          return digits(index, 2);
-        } else {
-          return null;
-        }
-      }
-      return digits(index, 2);
+    //1116
+    if (index >= 0 && index < 4) {
+      // DateTime time = currentTime.add(Duration(days: _currentLeftIndex));
+      // if (isAtSameDay(minTime, time) && _currentMiddleIndex == 0) {
+      //   if (index >= 0 && index < 60 - minTime!.minute) {
+      //     return digits(((minTime!.minute/15).ceil() + index) * 15, 2);
+      //   } else {
+      //     return null;
+      //   }
+      // } else if (isAtSameDay(maxTime, time) &&
+      //     _currentMiddleIndex >= maxTime!.hour) {
+      //   if (index >= 0 && index <= maxTime!.minute) {
+      //     return digits(index * 15, 2);
+      //   } else {
+      //     return null;
+      //   }
+      // }
+      return digits(index * 15, 2);
     }
-
+    //1116
     return null;
   }
 
@@ -679,13 +690,15 @@ class DateTimePickerModel extends CommonPickerModel {
   DateTime finalTime() {
     DateTime time = currentTime.add(Duration(days: _currentLeftIndex));
     var hour = _currentMiddleIndex;
-    var minute = _currentRightIndex;
+    //1116
+    var minute = _currentRightIndex * 15;
     if (isAtSameDay(minTime, time)) {
       hour += minTime!.hour;
-      if (minTime!.hour == hour) {
-        minute += minTime!.minute;
-      }
+      // if (minTime!.hour == hour) {
+      //   minute += minTime!.minute;
+      // }
     }
+    //1116
 
     return currentTime.isUtc
         ? DateTime.utc(time.year, time.month, time.day, hour, minute)
@@ -711,10 +724,10 @@ class TimeAsQuantityPickerModel extends CommonPickerModel {
 
   TimeAsQuantityPickerModel(
       {DateTime? currentTime,
-      LocaleType? locale,
-      this.showSecondsColumn: true,
-      this.leftIndex,
-      this.middleIndex})
+        LocaleType? locale,
+        this.showSecondsColumn: true,
+        this.leftIndex,
+        this.middleIndex})
       : super(locale: locale) {
     this.currentTime = currentTime ?? DateTime.now();
     _currentLeftIndex = leftIndex ?? 0;
@@ -774,8 +787,8 @@ class TimeAsQuantityPickerModel extends CommonPickerModel {
   DateTime finalTime() {
     return currentTime.isUtc
         ? DateTime.utc(currentTime.year, currentTime.month, currentTime.day,
-            _currentLeftIndex, _currentMiddleIndex * 15, _currentRightIndex)
+        _currentLeftIndex, _currentMiddleIndex * 15, _currentRightIndex)
         : DateTime(currentTime.year, currentTime.month, currentTime.day,
-            _currentLeftIndex, _currentMiddleIndex * 15, _currentRightIndex);
+        _currentLeftIndex, _currentMiddleIndex * 15, _currentRightIndex);
   }
 }
